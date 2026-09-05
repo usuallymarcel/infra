@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:18
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    ports:
+      - 5432:5432 #ideally not here but we test local dev using prod db :) not exposed to internet since server is on home network
+    networks:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      - "traefik.http.routers.redisinsight.rule=Host(`pgadmin.marcel.co.nz`)"
+      - "traefik.http.routers.redisinsight.entrypoints=web"
+
+      - "traefik.http.services.redisinsight.loadbalancer.server.port=80"
+    networks:
+      - postgres
+      - proxy
+
+volumes:
+  postgres_data:
+  pgadmin_data:
+
+
+networks:
+  postgres:
+    name: postgres
+  proxy:
+    external: true

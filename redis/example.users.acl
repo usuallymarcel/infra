@@ -1,0 +1,7 @@
+user default off
+
+user admin on >SuperSecretAdminPassword123 ~* &* +@all
+
+user app on >SuperSecretAppPassword456 ~* &* +get +set +del +exists +expire +ttl +incr +decr
+or
+user app on >SuperSecretAppPassword456 ~* &* +@all

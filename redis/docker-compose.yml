@@ -1,0 +1,53 @@
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+    # command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --aclfile /usr/local/etc/redis/users.acl
+    ports:
+      - "6379:6379" #ideally not exposed, but server is on my home network
+
+    volumes:
+      - redis-data:/data
+      - ./users.acl:/usr/local/etc/redis/users.acl:ro
+    networks:
+      - redis
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  redis-insight:
+    image: redis/redisinsight:latest
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
+
+      - "traefik.http.routers.redisinsight.rule=Host(`redis.marcel.co.nz`)"
+      - "traefik.http.routers.redisinsight.entrypoints=web"
+
+      - "traefik.http.services.redisinsight.loadbalancer.server.port=5540"
+    volumes:
+      - redis-insight-data:/data
+    networks:
+      - redis
+      - proxy
+    depends_on:
+      redis:
+        condition: service_healthy
+
+
+
+volumes:
+  redis-data:
+  redis-insight-data:
+
+networks:
+  redis:
+    name: redis
+  proxy:
+    external: true
