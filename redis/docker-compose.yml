@@ -44,7 +44,9 @@ services:
 
 volumes:
   redis-data:
+    name: infra_redis_data
   redis-insight-data:
+    name: infra_redis_insight_data
 
 networks:
   redis:
