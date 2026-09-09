@@ -20,6 +20,3 @@ services:
     networks:
       - proxy
 
-networks:
-  proxy:
-    name: proxy

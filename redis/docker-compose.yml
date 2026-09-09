@@ -51,5 +51,3 @@ volumes:
 networks:
   redis:
     name: redis
-  proxy:
-    external: true
