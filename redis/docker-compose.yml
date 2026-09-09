@@ -28,7 +28,7 @@ services:
       - "traefik.docker.network=proxy"
 
       - "traefik.http.routers.redisinsight.rule=Host(`redis.marcel.co.nz`)"
-      - "traefik.http.routers.redisinsight.entrypoints=websecure"
+      - "traefik.http.routers.redisinsight.entrypoints=web"
 
       - "traefik.http.services.redisinsight.loadbalancer.server.port=5540"
     volumes:
