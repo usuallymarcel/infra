@@ -36,6 +36,8 @@ services:
     networks:
       - redis
       - proxy
+    ports:
+      - "5051:5540"
     depends_on:
       redis:
         condition: service_healthy
